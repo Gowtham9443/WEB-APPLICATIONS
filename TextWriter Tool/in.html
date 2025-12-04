@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Primary Title & Description (SEO) -->
+    <title>TextWriter ❮/❯ HTML — 2025 Online Text Writer to HTML Converter</title>
+    <meta name="description" content="TextWriter ❮/❯ HTML — A fast, minimalist online HTML text writer & converter. Live preview, download .html, export PDF, copy & share snippets. Works offline." />
+    <meta name="keywords" content="TextWriter, HTML editor, HTML converter, online editor, offline editor, live preview, download html, export pdf" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="https://santhosh2024.neocities.org/HTML/in" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" href="ico.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#121212" />
+
+    <!-- Open Graph (social share) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TextWriter ❮/❯ HTML — 2025 Online Text Writer to HTML Converter" />
+    <meta property="og:description" content="A fast, minimalist online HTML text writer & converter. Live preview, download .html, export PDF, copy & share snippets." />
+    <meta property="og:url" content="https://santhosh2024.neocities.org/HTML/in" />
+    <meta property="og:site_name" content="TextWriter" />
+    <!-- Replace or upload a proper OG image to your site and update the URL below -->
+    <meta property="og:image" content="https://santhosh2024.neocities.org/HTML/og-image.png" />
+    <meta property="og:image:alt" content="TextWriter — live preview screenshot" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TextWriter ❮/❯ HTML" />
+    <meta name="twitter:description" content="Online HTML text writer with live preview, save & export options." />
+    <meta name="twitter:image" content="https://santhosh2024.neocities.org/HTML/og-image.png" />
+    <meta name="twitter:creator" content="@Santhosh" />
+
+    <!-- Structured Data: SoftwareApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "TextWriter ❮/❯ HTML",
+      "url": "https://santhosh2024.neocities.org/HTML/in",
+      "logo": "https://santhosh2024.neocities.org/HTML/logo.png",
+      "image": ["https://santhosh2024.neocities.org/HTML/og-image.png"],
+      "description": "A fast and lightweight HTML text editor with live preview, save/export, and offline support.",
+      "applicationCategory": "DeveloperTool",
+      "operatingSystem": "All",
+      "author": {
+        "@type": "Person",
+        "name": "Santhosh"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      }
+    }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+    <!-- html2pdf (you already used it) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <style>
+        /* --- 1. Theming and Root Variables --- */
+        :root {
+            --font-primary: 'Inter', sans-serif;
+            --font-display: 'Orbitron', sans-serif;
+            
+            /* Light Theme */
+            --bg-color-light: #f4f7f9;
+            --panel-bg-light: #ffffff;
+            --text-color-light: #1a202c;
+            --border-color-light: #e2e8f0;
+            --accent-color-light: #3182ce;
+            --accent-color-hover-light: #2b6cb0;
+            --shadow-light: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+            /* Dark Theme */
+            --bg-color-dark: #121212;
+            --panel-bg-dark: rgba(26, 26, 29, 0.75);
+            --text-color-dark: #e2e8f0;
+            --border-color-dark: #2d3748;
+            --accent-color-dark: #63b3ed;
+            --accent-color-hover-dark: #90cdf4;
+            --shadow-dark: 0 4px 15px rgba(0, 0, 0, 0.2);
+
+            /* Transitions */
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        /* --- Theme-specific styles --- */
+        body.light-mode {
+            background-color: var(--bg-color-light);
+            color: var(--text-color-light);
+            --bg-color: var(--bg-color-light);
+            --panel-bg: var(--panel-bg-light);
+            --text-color: var(--text-color-light);
+            --border-color: var(--border-color-light);
+            --accent-color: var(--accent-color-light);
+            --accent-color-hover: var(--accent-color-hover-light);
+            --shadow: var(--shadow-light);
+        }
+
+        body.dark-mode {
+            background-color: var(--bg-color-dark);
+            color: var(--text-color-dark);
+            --bg-color: var(--bg-color-dark);
+            --panel-bg: var(--panel-bg-dark);
+            --text-color: var(--text-color-dark);
+            --border-color: var(--border-color-dark);
+            --accent-color: var(--accent-color-dark);
+            --accent-color-hover: var(--accent-color-hover-dark);
+            --shadow: var(--shadow-dark);
+        }
+
+        /* --- 2. Layout & Structure --- */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .app-header h1 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin: 0;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .main-container {
+            display: flex;
+            flex-grow: 1;
+            overflow: hidden;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+        }
+
+        /* --- 3. Editor & Preview Panels --- */
+        #toolbar {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: rgba(0,0,0,0.05);
+        }
+
+        .toolbar-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 6px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+        .toolbar-btn:hover, .toolbar-btn.active {
+            background-color: var(--accent-color);
+            color: var(--panel-bg);
+            border-color: var(--accent-color);
+        }
+
+        #text-editor {
+            flex-grow: 1;
+            padding: 20px;
+            font-size: 16px;
+            line-height: 1.7;
+            outline: none;
+            overflow-y: auto;
+            color: var(--text-color);
+        }
+
+        #output-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+        }
+        .tab-btn.active {
+            color: var(--accent-color);
+        }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+
+        .output-content {
+            flex-grow: 1;
+            overflow: auto;
+            position: relative;
+        }
+
+        #live-preview {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #fff;
+        }
+        
+        #code-view {
+            padding: 20px;
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            background-color: transparent;
+            color: var(--text-color);
+        }
+
+        /* --- 4. Controls & Actions --- */
+        .actions-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 1rem;
+            padding: 12px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--panel-bg);
+            backdrop-filter: blur(10px);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .action-btn, .action-select {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: transparent;
+            color: var(--text-color);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
+            font-size: 14px;
+        }
+        .action-btn:hover, .action-select:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+        .action-btn.primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+            color: #fff;
+        }
+        .action-btn.primary:hover {
+            background-color: var(--accent-color-hover);
+        }
+        .action-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e2e8f0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 10px;
+            padding-right: 36px;
+        }
+
+        /* --- 5. UI Elements (Theme Toggle, Notifications) --- */
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+        .theme-switch input { display: none; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 26px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent-color); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-dark);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            pointer-events: none;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translate(-50%, -10px);
+        }
+
+        /* Hide elements not active */
+        .output-content > *:not(.active) { display: none; }
+
+        /* --- 6. Responsive Design --- */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+                height: auto;
+            }
+            .panel {
+                min-height: 400px; /* Ensure panels have a minimum height on mobile */
+            }
+            .actions-bar {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="dark-mode">
+    <!-- Accessible header with explicit role -->
+    <header class="app-header" role="banner">
+        <h1>TextWriter ❮/❯ HTML</h1>
+        <label class="theme-switch" title="Toggle Dark/Light Mode" aria-label="Toggle theme">
+            <input type="checkbox" id="theme-toggle" checked>
+            <span class="slider" role="switch" aria-checked="true"></span>
+        </label>
+    </header>
+
+    <main class="main-container" role="main" aria-labelledby="main-title">
+        <section class="panel" aria-label="Editor panel">
+            <div id="toolbar" role="toolbar" aria-label="Formatting toolbar">
+                <button class="toolbar-btn" data-command="bold" title="Bold" aria-label="Bold"><b>B</b></button>
+                <button class="toolbar-btn" data-command="italic" title="Italic" aria-label="Italic"><i>I</i></button>
+                <button class="toolbar-btn" data-command="underline" title="Underline" aria-label="Underline"><u>U</u></button>
+                <button class="toolbar-btn" data-command="formatBlock" data-value="h1" title="Heading 1" aria-label="Heading 1">H1</button>
+                <button class="toolbar-btn" data-command="formatBlock" data-value="h2" title="Heading 2" aria-label="Heading 2">H2</button>
+                <button class="toolbar-btn" data-command="formatBlock" data-value="p" title="Paragraph" aria-label="Paragraph">P</button>
+                <button class="toolbar-btn" data-command="insertUnorderedList" title="Unordered List" aria-label="Unordered List">● List</button>
+                <button class="toolbar-btn" data-command="insertOrderedList" title="Ordered List" aria-label="Ordered List">1. List</button>
+                <button class="toolbar-btn" data-command="createLink" title="Create Link" aria-label="Create Link">🔗 Link</button>
+            </div>
+            <div id="text-editor" contenteditable="true" spellcheck="false" aria-label="HTML editor"></div>
+        </section>
+
+        <section class="panel" aria-label="Output panel">
+            <div id="output-tabs" role="tablist" aria-label="Output tabs">
+                <button class="tab-btn active" data-tab="preview" role="tab" aria-selected="true">🚀 Live Preview</button>
+                <button class="tab-btn" data-tab="code" role="tab" aria-selected="false">💻 HTML Code</button>
+            </div>
+            <div class="output-content" aria-live="polite">
+                <iframe id="live-preview" class="active" title="Live preview"></iframe>
+                <pre id="code-view-wrapper"><code id="code-view" aria-label="HTML code view"></code></pre>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="actions-bar" role="contentinfo">
+        <select id="template-select" class="action-select" aria-label="Choose template">
+            <option value="basic">Basic HTML5 Page</option>
+            <option value="blog">Blog Post Snippet</option>
+            <option value="portfolio">Portfolio Block</option>
+        </select>
+        <button id="copy-btn" class="action-btn" aria-label="Copy HTML">📋 Copy HTML</button>
+        <button id="share-btn" class="action-btn" aria-label="Share snippet">🔗 Share Snippet</button>
+        <button id="pdf-btn" class="action-btn" aria-label="Export to PDF">📄 Export PDF</button>
+        <button id="download-btn" class="action-btn primary" aria-label="Download HTML">💾 Download .html</button>
+    </footer>
+
+    <div id="notification" class="notification" role="status" aria-live="assertive"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- 1. DOM Element Selectors ---
+        const editor = document.getElementById('text-editor');
+        const livePreview = document.getElementById('live-preview');
+        const codeView = document.getElementById('code-view');
+        const toolbar = document.getElementById('toolbar');
+        const outputTabs = document.getElementById('output-tabs');
+        const downloadBtn = document.getElementById('download-btn');
+        const copyBtn = document.getElementById('copy-btn');
+        const shareBtn = document.getElementById('share-btn');
+        const pdfBtn = document.getElementById('pdf-btn');
+        const templateSelect = document.getElementById('template-select');
+        const themeToggle = document.getElementById('theme-toggle');
+        const notification = document.getElementById('notification');
+
+        // --- 2. State & Initial Content ---
+        const initialContent = `<h1>Welcome to the Future of Writing!</h1><p>This is your smart text writer. Start typing here, use the toolbar to format your text, and see the magic happen in the <b>Live Preview</b> panel.</p><ul><li>Real-time HTML conversion.</li><li>Syntax highlighting.</li><li>Multiple export options.</li></ul><p>Switch to the <b>HTML Code</b> tab to see the generated code. Enjoy! ✨ This Developed By The SANTHOSH</p>`;
+
+        // --- 3. Core Functions ---
+
+        /**
+         * The main function to update all outputs based on editor content.
+         */
+        const updateOutput = () => {
+            const content = editor.innerHTML;
+            const fullHtml = getFullHtml(content, templateSelect.value);
+            // Update Live Preview using srcdoc for security and isolation
+            livePreview.srcdoc = fullHtml;
+
+            // Update a syntax-highlighted code view
+            const highlightedHtml = syntaxHighlight(fullHtml);
+            codeView.innerHTML = highlightedHtml;
+            
+            // Auto-save to Local Storage
+            localStorage.setItem('textWriterContent', content);
+        };
+
+        /**
+         * Generates the full HTML document string based on a template.
+         * @param {string} content - The inner HTML from the editor.
+         * @param {string} template - The selected template name.
+         * @returns {string} - The complete HTML string.
+         */
+        const getFullHtml = (content, template) => {
+            switch (template) {
+                case 'blog':
+                    return `<article class="blog-post">
+    <h2>Your Blog Post Title</h2>
+    <p class="meta">Published on ${new Date().toLocaleDateString()}</p>
+    ${content}
+</article>`;
+                case 'portfolio':
+                    return `<section class="portfolio-block">
+    <img src="https://via.placeholder.com/600x400" alt="Placeholder Image" style="max-width:100%; border-radius: 8px;">
+    <div class="portfolio-content">
+        ${content}
+    </div>
+</section>`;
+                case 'basic':
+                default:
+                    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Awesome Page</title>
+    <meta name="description" content="Created with TextWriter ❮/❯ HTML">
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; max-width: 800px; margin: auto; }
+        img { max-width: 100%; height: auto; }
+    </style>
+</head>
+<body>
+    ${content}
+</body>
+</html>`;
+            }
+        };
+
+        /**
+         * Simple regex-based syntax highlighter for HTML.
+         * @param {string} html - The HTML string to highlight.
+         * @returns {string} - HTML string with spans for syntax coloring.
+         */
+        const syntaxHighlight = (html) => {
+            let formattedHtml = html.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            return formattedHtml.replace(/(&lt;)(\/?\w+)(.*?)(\/?&gt;)/g, (match, p1, p2, p3, p4) => {
+                const tagColor = 'var(--accent-color)';
+                const attrNameColor = '#d19a66'; // orange-ish
+                const attrValueColor = '#98c379'; // green-ish
+                
+                const highlightedAttrs = p3.replace(/(\w+)=(".*?")/g, 
+                    `<span style="color:${attrNameColor}">$1</span>=<span style="color:${attrValueColor}">$2</span>`
+                );
+
+                return `<span style="color:${tagColor}">${p1}${p2}</span>${highlightedAttrs}<span style="color:${tagColor}">${p4}</span>`;
+            });
+        };
+
+        /** Debounce function to limit rapid updates */
+        const debounce = (func, delay) => {
+            let timeout;
+            return (...args) => {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), delay);
+            };
+        };
+
+        /** Show a temporary notification message */
+        const showNotification = (message) => {
+            notification.textContent = message;
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2500);
+        };
+
+        // --- 4. Event Handlers ---
+
+        // Editor input
+        editor.addEventListener('input', debounce(updateOutput, 250));
+
+        // Toolbar commands
+        toolbar.addEventListener('click', (e) => {
+            const target = e.target.closest('.toolbar-btn');
+            if (!target) return;
+
+            const command = target.dataset.command;
+            const value = target.dataset.value || null;
+
+            if (command === 'createLink') {
+                const url = prompt('Enter the URL:');
+                if (url) {
+                    document.execCommand(command, false, url);
+                }
+            } else {
+                document.execCommand(command, false, value);
+            }
+            editor.focus();
+            updateOutput(); // Update immediately after formatting
+        });
+
+        // Tab switching
+        outputTabs.addEventListener('click', (e) => {
+            const target = e.target.closest('.tab-btn');
+            if (!target) return;
+
+            // Update active button
+            outputTabs.querySelector('.active').classList.remove('active');
+            target.classList.add('active');
+
+            // Show correct panel
+            const tabName = target.dataset.tab;
+            document.querySelector('.output-content .active').classList.remove('active');
+            if(tabName === 'preview') {
+                document.getElementById('live-preview').classList.add('active');
+            } else {
+                document.getElementById('code-view-wrapper').classList.add('active');
+            }
+        });
+
+        // Template selection
+        templateSelect.addEventListener('change', updateOutput);
+        
+        // Theme toggling
+        themeToggle.addEventListener('change', () => {
+            document.body.classList.toggle('dark-mode');
+            document.body.classList.toggle('light-mode');
+            localStorage.setItem('textWriterTheme', document.body.className);
+            // update ARIA state
+            const slider = document.querySelector('.slider');
+            slider.setAttribute('aria-checked', document.body.classList.contains('dark-mode') ? 'true' : 'false');
+        });
+
+        // Download HTML
+        downloadBtn.addEventListener('click', () => {
+            const fullHtml = getFullHtml(editor.innerHTML, templateSelect.value);
+            const blob = new Blob([fullHtml], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my-page.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showNotification('File download started!');
+        });
+        
+        // Copy HTML
+        copyBtn.addEventListener('click', () => {
+            const codeToCopy = getFullHtml(editor.innerHTML, templateSelect.value);
+            navigator.clipboard.writeText(codeToCopy).then(() => {
+                showNotification('HTML copied to clipboard!');
+            }).catch(err => {
+                showNotification('Failed to copy.');
+                console.error('Copy failed', err);
+            });
+        });
+
+        // Share Snippet
+        shareBtn.addEventListener('click', () => {
+            try {
+                const contentToShare = btoa(encodeURIComponent(editor.innerHTML));
+                const shareUrl = `${window.location.origin}${window.location.pathname}#${contentToShare}`;
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    showNotification('Shareable link copied to clipboard!');
+                });
+            } catch (e) {
+                showNotification('Share failed.');
+                console.error(e);
+            }
+        });
+
+        // Export to PDF
+        pdfBtn.addEventListener('click', () => {
+            showNotification('Generating PDF...');
+            const content = editor.innerHTML;
+            const element = getFullHtml(content, 'basic'); // Always use basic page for PDF context
+            const opt = {
+                margin:       1,
+                filename:     'document.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            // html2pdf accepts DOM elements usually; since we have a string, create a hidden iframe to render
+            try {
+                const iframe = document.createElement('iframe');
+                iframe.style.position = 'fixed';
+                iframe.style.left = '-9999px';
+                document.body.appendChild(iframe);
+                iframe.contentDocument.open();
+                iframe.contentDocument.write(element);
+                iframe.contentDocument.close();
+                setTimeout(() => {
+                    html2pdf().from(iframe.contentDocument.body).set(opt).save().finally(() => {
+                        document.body.removeChild(iframe);
+                    });
+                }, 300);
+            } catch (err) {
+                console.error('PDF generation error', err);
+                showNotification('PDF generation failed.');
+            }
+        });
+
+
+        // --- 5. Initialization ---
+
+        // Load theme from localStorage
+        const savedTheme = localStorage.getItem('textWriterTheme');
+        if (savedTheme) {
+            document.body.className = savedTheme;
+            themeToggle.checked = savedTheme.includes('dark-mode');
+        } else {
+             document.body.classList.add('dark-mode');
+        }
+
+        // Load content from URL hash (share feature) or localStorage
+        let loadedContent = '';
+        if (window.location.hash) {
+            try {
+                loadedContent = decodeURIComponent(atob(window.location.hash.substring(1)));
+                // Clear the hash to avoid re-loading on refresh
+                history.pushState("", document.title, window.location.pathname + window.location.search);
+            } catch (e) {
+                console.error('Failed to decode hash content:', e);
+                loadedContent = localStorage.getItem('textWriterContent') || initialContent;
+            }
+        } else {
+            loadedContent = localStorage.getItem('textWriterContent') || initialContent;
+        }
+        
+        editor.innerHTML = loadedContent;
+        updateOutput(); // Initial render
+    });
+    </script>
+</body>
+</html>

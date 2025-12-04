@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Student Details Form</title>
+  <style>
+    :root{
+      --bg:#0f172a;
+      --card:#111827;
+      --muted:#94a3b8;
+      --text:#e5e7eb;
+      --accent:#22c55e;
+      --accent-2:#06b6d4;
+      --danger:#ef4444;
+      --ring:#334155;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;
+      background:linear-gradient(180deg,#0b1220 0%, #0f172a 100%);
+      color:var(--text);
+      min-height:100dvh; display:flex; align-items:center; justify-content:center; padding:16px;
+    }
+    .wrap{
+      width:100%; max-width:520px; background:rgba(17,24,39,.8); border:1px solid #1f2937;
+      border-radius:18px; padding:22px; box-shadow:0 10px 40px rgba(0,0,0,.35); backdrop-filter: blur(6px);
+    }
+    h1{margin:6px 0 12px; font-size:1.55rem; line-height:1.2}
+    p.subtitle{margin:0 0 18px; color:var(--muted); font-size:.95rem}
+    form{display:grid; gap:12px}
+    label{font-size:.92rem; color:#cbd5e1}
+    input{
+      width:100%; padding:12px 14px; border-radius:12px; background:#0b1220; color:var(--text);
+      border:1px solid var(--ring); outline:none; font-size:1rem; transition:border .15s, box-shadow .15s
+    }
+    input:focus{border-color:var(--accent-2); box-shadow:0 0 0 3px rgba(6,182,212,.15)}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    @media (max-width:520px){ .row{grid-template-columns:1fr} }
+    .btn{
+      padding:12px 16px; border:none; border-radius:12px; font-weight:600; cursor:pointer;
+      background:linear-gradient(90deg,var(--accent) 0%, var(--accent-2) 100%); color:#00110b; font-size:1rem;
+    }
+    .btn[disabled]{opacity:.6; cursor:not-allowed}
+    .note{font-size:.85rem; color:var(--muted)}
+    .msg{
+      border-radius:12px; padding:12px; margin-top:10px; display:none; font-size:.95rem;
+      border:1px solid transparent;
+    }
+    .msg.ok{display:block; border-color:#14532d; background:#052e1a; color:#c7f9d4}
+    .msg.err{display:block; border-color:#4c0519; background:#2a0a12; color:#fecdd3}
+    footer{margin-top:14px; text-align:center; color:#8b9db5; font-size:.8rem}
+    .req{color:var(--danger)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Student Details</h1>
+    <p class="subtitle">Fill the form and press Submit. Your data is stored securely in a Google Sheet.</p>
+
+    <form id="studentForm" novalidate>
+      <div>
+        <label for="name">Name <span class="req">*</span></label>
+        <input id="name" name="name" type="text" placeholder="e.g., Priya Kumar" required />
+      </div>
+
+      <div class="row">
+        <div>
+          <label for="className">Class <span class="req">*</span></label>
+          <input id="className" name="className" type="text" placeholder="e.g., 10th A" required />
+        </div>
+        <div>
+          <label for="location">Location <span class="req">*</span></label>
+          <input id="location" name="location" type="text" placeholder="e.g., Coimbatore" required />
+        </div>
+      </div>
+
+      <div>
+        <label for="email">Email <span class="req">*</span></label>
+        <input id="email" name="email" type="email" inputmode="email" placeholder="e.g., priya@mail.com" required />
+      </div>
+
+      <button class="btn" id="submitBtn" type="submit">Submit</button>
+      <div id="message" class="msg"></div>
+      <p class="note">By submitting, you consent to store the data in the linked Google Sheet for record purposes.</p>
+    </form>
+
+    <footer>© <span id="year"></span> Student Intake · Built with HTML, CSS & JS</footer>
+  </div>
+
+  <script>
+    // ==== CONFIG: paste your Apps Script Web App URL here ====
+    const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxVIfZG0QXQ5V7jdpTlhIJKdepXtC7ZhIrpwMMCEO0nYTS-7OeGPKP5P84NEoT1xxMAKA/exec'; // e.g., https://script.google.com/macros/s/AKfycbx.../exec
+
+    const form = document.getElementById('studentForm');
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('message');
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    function showMessage(text, type = 'ok') {
+      msg.textContent = text;
+      msg.className = 'msg ' + (type === 'ok' ? 'ok' : 'err');
+    }
+
+    function clearMessage() {
+      msg.textContent = '';
+      msg.className = 'msg';
+    }
+
+    function validate(formData) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!formData.name.trim()) return 'Please enter your name.';
+      if (!formData.className.trim()) return 'Please enter your class.';
+      if (!formData.location.trim()) return 'Please enter your location.';
+      if (!emailRegex.test(formData.email.trim())) return 'Please enter a valid email.';
+      return null;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearMessage();
+
+      const formData = {
+        name: document.getElementById('name').value || '',
+        className: document.getElementById('className').value || '',
+        location: document.getElementById('location').value || '',
+        email: document.getElementById('email').value || ''
+      };
+
+      const error = validate(formData);
+      if (error) {
+        showMessage(error, 'err');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      try {
+        const res = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+          // mode: 'cors' is default; we rely on server CORS headers.
+        });
+
+        // If backend is Apps Script with proper CORS, this will be fine.
+        // Some deployments might not return non-200 codes; we still parse JSON.
+        let data = null;
+        try {
+          data = await res.json();
+        } catch (_) {
+          // If response is opaque or not JSON, provide generic success
+          // (fallback) — but our Apps Script returns JSON.
+        }
+
+        if (res.ok && data && data.ok) {
+          showMessage('✅ Submission successful. Thank you!');
+          form.reset();
+        } else if (data && data.error) {
+          showMessage('❌ ' + data.error, 'err');
+        } else if (res.ok) {
+          showMessage('✅ Submission received.'); // generic
+          form.reset();
+        } else {
+          showMessage('❌ Failed to submit. Please try again.', 'err');
+        }
+      } catch (err) {
+        // Fallback: if you ever face strict corporate proxies/CDNs causing CORS,
+        // uncomment the beacon approach below as a last resort (no response readback).
+        // navigator.sendBeacon(WEB_APP_URL, new Blob([JSON.stringify(formData)], { type: 'application/json' }));
+        // showMessage('✅ Submitted (fallback). Please check the Google Sheet in a moment.');
+        showMessage('❌ Network error. Please check your internet and try again.', 'err');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit';
+      }
+    });
+  </script>
+</body>
+</html>
