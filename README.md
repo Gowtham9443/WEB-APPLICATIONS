@@ -2,7 +2,7 @@
 
 This repository showcases web development projects built exclusively using the foundational front-end triad: **HTML, CSS, and vanilla JavaScript**. These projects are ideal for developers looking to master core client-side concepts, DOM manipulation, and responsive design.
 
----
+---   
 
 ## 📜 Key Project Categories
 
