@@ -55,7 +55,7 @@ https://gowtham2025.neocities.org/WEB%20APP/VS%20Code/best_team_editor
 ---
 ## 👨‍💻 Author
 **Gowtham M**  
-MCA Student (Batch 2027)
+MCA Student
 ---
 ## ⭐ Support
 If you like this project, give it a ⭐ on GitHub!
