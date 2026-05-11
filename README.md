@@ -46,6 +46,9 @@ https://gowtham2025.neocities.org/WEB%20APP/BEST-OS/BestOS
 🔗 Demo link :
 https://gowtham2025.neocities.org/WEB%20APP/Best%20team%20image%20toolkit/toolkit
 ----
+🔗 Demo link :
+https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanced%20(2)
+----
 ## 🛠️ Technologies Used
 - HTML5  
 - CSS3  
