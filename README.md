@@ -1,6 +1,34 @@
 # 🌐 Web Applications Collections
 This repository contains a collection of simple and useful web applications developed using HTML, CSS, and JavaScript. Each project is designed to solve a specific problem or provide a utility feature.       
 ---    
+----
+## 🛠️ Technologies Used
+- HTML5  
+- CSS3  
+- JavaScript  
+---
+## 📌 Features
+- Simple and user-friendly UI  
+- Lightweight applications  
+- Works directly in the browser  
+- No installation required  
+---
+## 📂 How to Use
+1. Open any demo link above  
+2. Start using the application directly  
+3. Explore different tools  
+---
+## 👨‍💻 Author
+**Gowtham M**  
+MCA Student     
+---
+## ⭐ Support
+If you like this project, give it a ⭐ on GitHub!
+
+---
+## ⭐ My Web Site 
+https://gowtham2025.neocities.org/
+---
 ## 🚀 Projects Included  
 
 ### 1. Media Converter
@@ -50,30 +78,3 @@ https://gowtham2025.neocities.org/WEB%20APP/Best%20team%20image%20toolkit/toolki
 ### 12.Bill Splitter
 🔗 Demo link :
 https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanced%20(2)
-----
-## 🛠️ Technologies Used
-- HTML5  
-- CSS3  
-- JavaScript  
----
-## 📌 Features
-- Simple and user-friendly UI  
-- Lightweight applications  
-- Works directly in the browser  
-- No installation required  
----
-## 📂 How to Use
-1. Open any demo link above  
-2. Start using the application directly  
-3. Explore different tools  
----
-## 👨‍💻 Author
-**Gowtham M**  
-MCA Student     
----
-## ⭐ Support
-If you like this project, give it a ⭐ on GitHub!
-
----
-## ⭐ My Web Site 
-https://gowtham2025.neocities.org/
