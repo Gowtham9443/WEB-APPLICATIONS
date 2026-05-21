@@ -41,7 +41,7 @@ https://gowtham2025.neocities.org/WEB%20APP/Mony%20Tracker/test
 ---
 ### 3. QR Code Generator
 🔗 Demo Link:  
-https://gowtham2025.neocities.org/WEB%20APP/QR%20code%20generator/OR  
+https://gowtham2025.neocities.org/WEB%20APP/QR%20code%20generator/QR  
 ---
 ### 4. Student Details Page
 🔗 Demo Link:  
