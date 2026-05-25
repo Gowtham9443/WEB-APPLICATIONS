@@ -33,7 +33,7 @@ https://gowtham2025.neocities.org/
 
 ### 1. Media Converter
 🔗 Demo Link :    
-https://gowtham2025.neocities.org/WEB%20APP/Media%20Converter/Media%20Converter  
+https://gowtham2025.neocities.org/WEB%20APP/Media%20Converter/Media%20kit  
 ---
 ### 2. Mony Tracker
 🔗 Demo Link :  
