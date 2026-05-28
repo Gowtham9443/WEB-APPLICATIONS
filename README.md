@@ -83,3 +83,7 @@ https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanc
 🔗 Demo link :
 https://gowtham2025.neocities.org/WEB%20APP/SharedWallet/SharedWallet%20New
 ---
+### 14.fruit ninja
+🔗 Demo link :
+
+----
