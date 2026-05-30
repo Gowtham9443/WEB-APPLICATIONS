@@ -21,7 +21,7 @@ This repository contains a collection of simple and useful web applications deve
 ---
 ## 👨‍💻 Author
 **Gowtham M**  
-MCA Student     
+MCA Student      
 ---
 ## ⭐ Support
 If you like this project, give it a ⭐ on GitHub!
