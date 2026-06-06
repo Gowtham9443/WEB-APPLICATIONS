@@ -83,14 +83,11 @@ https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanc
 ---
 ### 13. SharedWallet
 🔗 Demo link :
-https://gowtham2025.neocities.org/WEB%20APP/SharedWallet/SharedWallet%20New
+ https://gowtham2025.neocities.org/WEB%20APP/SharedWallet/SharedWallet%20New
 ---
 ### 14.fruit ninja
 🔗 Demo link : https://gowtham2025.neocities.org/WEB%20APP/fruit%20ninja/slice_rush_mobile
-
 ----
 ### 15. flappy bird
-
-🔗 Demo link : https://gowtham2025.neocities.org/WEB%20APP/flappy%20bird/flappy_bird_deluxe%20(1)
-
+🔗 Demo link : https://gowtham2025.neocities.org/WEB%20APP/flappy%20bird/flappy_bird_deluxe%20(1) 
 ---
