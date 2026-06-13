@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Watermark Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
+        }
+
+        /* Light Mode Background */
+        body:not(.dark) {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 50%, #f3e8ff 100%);
+        }
+
+        /* Dark Mode Background */
+        .dark body {
+            background: linear-gradient(135deg, #0f172a 0%, #312e81 50%, #4c1d95 100%);
+        }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #6366f1;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+            transition: transform 0.1s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+        .dark input[type=range]::-webkit-slider-thumb {
+            background: #ffffff;
+            box-shadow: 0 0 10px rgba(0,0,0,0.4);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: rgba(99, 102, 241, 0.2);
+            border-radius: 4px;
+        }
+        .dark input[type=range]::-webkit-slider-runnable-track {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        input[type=color] {
+            -webkit-appearance: none;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            height: 44px; /* Touch friendly height */
+            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: inset 0 0 0 1px rgba(0,0,0,0.1);
+        }
+        .dark input[type=color] {
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+        }
+        input[type=color]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type=color]::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s ease;
+        }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .glass-input {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #1e293b;
+            transition: all 0.3s ease;
+        }
+        .dark .glass-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+
+        /* Custom Scrollbar for mobile panels if needed */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.5);
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 dark:text-slate-100 p-4 md:p-8 flex items-center justify-center">
+
+    <main class="w-full max-w-6xl glass-panel rounded-3xl overflow-hidden flex flex-col lg:flex-row shadow-2xl relative">
+        
+        <!-- Theme Toggle Button -->
+        <button id="themeToggle" class="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/20 dark:bg-black/20 backdrop-blur-md border border-black/5 dark:border-white/10 text-slate-700 dark:text-yellow-300 hover:scale-110 transition-transform">
+            <!-- Sun Icon (shows in dark mode) -->
+            <svg id="sunIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <!-- Moon Icon (shows in light mode) -->
+            <svg id="moonIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+        </button>
+
+        <!-- Left Section: Image Preview & Dropzone -->
+        <div class="w-full lg:w-3/5 p-4 sm:p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-black/5 dark:border-white/10 relative">
+            
+            <header class="mb-4 sm:mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <h1 class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-300 dark:to-purple-300">
+                    Watermark Studio
+                </h1>
+                <label class="cursor-pointer bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-medium transition-colors shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Upload Image
+                    <input type="file" id="imageUpload" accept="image/*,.png,.jpg,.jpeg,.webp,.heic,.heif,.svg,.bmp" class="hidden">
+                </label>
+            </header>
+
+            <!-- Drag & Drop Container -->
+            <div id="dropZone" class="relative flex-grow flex items-center justify-center bg-slate-100/50 dark:bg-black/30 rounded-2xl border-2 border-dashed border-slate-300 dark:border-white/20 transition-all duration-300 overflow-hidden min-h-[350px] lg:min-h-[500px]">
+                
+                <!-- Drag Overlay (shows when dragging file) -->
+                <div id="dragOverlay" class="absolute inset-0 z-20 bg-indigo-500/10 backdrop-blur-sm flex flex-col items-center justify-center hidden">
+                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-xl flex flex-col items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-indigo-500 mb-3 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p class="text-xl font-bold text-slate-700 dark:text-white">Drop Image Here</p>
+                    </div>
+                </div>
+
+                <!-- Placeholder when no image -->
+                <div id="uploadPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 dark:text-slate-400 pointer-events-none p-6 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-lg font-medium">Drag & Drop an image here</p>
+                    <p class="text-sm opacity-70 mt-1">or click 'Upload Image' above</p>
+                </div>
+
+                <!-- Preview Canvas -->
+                <canvas id="canvas" class="max-w-full max-h-full object-contain hidden z-10 shadow-lg"></canvas>
+            </div>
+        </div>
+
+        <!-- Right Section: Controls -->
+        <div class="w-full lg:w-2/5 p-4 sm:p-6 lg:p-8 bg-slate-50/50 dark:bg-black/20 flex flex-col">
+            <h2 class="text-xl font-semibold mb-6 text-slate-800 dark:text-slate-200">Watermark Settings</h2>
+            
+            <div class="space-y-5 sm:space-y-6 flex-grow">
+                
+                <!-- Text Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Watermark Text</label>
+                    <input type="text" id="watermarkText" value="© Your Brand" placeholder="Enter text..." 
+                        class="w-full glass-input px-4 py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                </div>
+
+                <!-- Font Size -->
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Font Size</label>
+                        <span id="fontSizeDisplay" class="text-xs font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-slate-600 dark:text-slate-300">40px</span>
+                    </div>
+                    <input type="range" id="fontSize" min="10" max="200" value="40" class="disabled:opacity-50 disabled:cursor-not-allowed py-2" disabled>
+                </div>
+
+                <!-- Color and Opacity Row -->
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="w-full sm:w-1/3 space-y-2">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Color</label>
+                        <input type="color" id="fontColor" value="#ffffff" class="disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    </div>
+                    
+                    <div class="w-full sm:w-2/3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Opacity</label>
+                            <span id="opacityDisplay" class="text-xs font-mono bg-slate-200 dark:bg-slate-700 px-2 py-1 rounded text-slate-600 dark:text-slate-300">50%</span>
+                        </div>
+                        <input type="range" id="opacity" min="0" max="100" value="50" class="mt-2 disabled:opacity-50 disabled:cursor-not-allowed py-2" disabled>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Position / Pattern</label>
+                    <div class="relative">
+                        <select id="position" class="w-full glass-input px-4 py-3 rounded-xl appearance-none disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            <option value="tiled" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white">Tiled (Repeated Background)</option>
+                            <option value="bottom-right" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white" selected>Bottom Right</option>
+                            <option value="bottom-left" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white">Bottom Left</option>
+                            <option value="top-right" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white">Top Right</option>
+                            <option value="top-left" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white">Top Left</option>
+                            <option value="center" class="bg-white dark:bg-slate-800 text-slate-800 dark:text-white">Center</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500 dark:text-slate-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <button id="downloadBtn" class="mt-6 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-purple-500/30 transform transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Download Watermarked Image
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const dropZone = document.getElementById('dropZone');
+        const dragOverlay = document.getElementById('dragOverlay');
+        
+        // Control Elements
+        const watermarkText = document.getElementById('watermarkText');
+        const fontSize = document.getElementById('fontSize');
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        const fontColor = document.getElementById('fontColor');
+        const opacity = document.getElementById('opacity');
+        const opacityDisplay = document.getElementById('opacityDisplay');
+        const position = document.getElementById('position');
+        const themeToggle = document.getElementById('themeToggle');
+
+        // State variables
+        let originalImage = null;
+        const controls = [watermarkText, fontSize, fontColor, opacity, position, downloadBtn];
+
+        // Theme Management
+        function initTheme() {
+            // Check local storage or system preference
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.theme = 'light';
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.theme = 'dark';
+            }
+        });
+
+        // Initialize theme on load
+        initTheme();
+
+        function updateCanvas() {
+            if (!originalImage) return;
+
+            // Clear canvas and draw original image
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(originalImage, 0, 0);
+
+            // Get settings
+            const text = watermarkText.value;
+            const size = parseInt(fontSize.value, 10);
+            const color = fontColor.value;
+            const alpha = parseInt(opacity.value, 10) / 100;
+            const pos = position.value;
+
+            // Setup text style
+            ctx.font = `bold ${size}px 'Inter', Arial, sans-serif`;
+            ctx.fillStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.textBaseline = 'top';
+
+            // Add drop shadow to guarantee visibility against similar colored backgrounds
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+            ctx.shadowBlur = Math.max(3, size / 8);
+            ctx.shadowOffsetX = Math.max(1, size / 15);
+            ctx.shadowOffsetY = Math.max(1, size / 15);
+
+            // Calculate metrics
+            const metrics = ctx.measureText(text);
+            const textWidth = metrics.width;
+            const textHeight = size; 
+
+            // Padding relative to image size
+            const padding = Math.max(20, canvas.width * 0.03);
+
+            if (pos === 'tiled') {
+                // Diagonal ensures full coverage when rotated
+                const diag = Math.sqrt(canvas.width * canvas.width + canvas.height * canvas.height);
+                
+                ctx.save();
+                // Move origin to center and rotate -45 degrees
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+                ctx.rotate(-Math.PI / 4); 
+                
+                // Generous spacing between repeated text
+                const xStep = textWidth + padding * 3;
+                const yStep = textHeight * 3.5;
+                
+                // Draw grid expanding outwards
+                for (let y = -diag; y < diag; y += yStep) {
+                    // Stagger rows
+                    const rowOffset = (Math.round((y + diag) / yStep) % 2 === 0) ? 0 : (xStep / 2);
+                    
+                    for (let x = -diag; x < diag; x += xStep) {
+                        ctx.fillText(text, x + rowOffset, y);
+                    }
+                }
+                ctx.restore();
+            } else {
+                let x = 0;
+                let y = 0;
+
+                // Position single watermark
+                switch (pos) {
+                    case 'top-left':
+                        x = padding;
+                        y = padding;
+                        break;
+                    case 'top-right':
+                        x = canvas.width - textWidth - padding;
+                        y = padding;
+                        break;
+                    case 'bottom-left':
+                        x = padding;
+                        y = canvas.height - textHeight - padding;
+                        break;
+                    case 'bottom-right':
+                        x = canvas.width - textWidth - padding;
+                        y = canvas.height - textHeight - padding;
+                        break;
+                    case 'center':
+                        x = (canvas.width - textWidth) / 2;
+                        y = (canvas.height - textHeight) / 2;
+                        break;
+                }
+                ctx.fillText(text, x, y);
+            }
+
+            // Reset context settings
+            ctx.globalAlpha = 1.0;
+            ctx.shadowColor = 'transparent';
+        }
+
+        // Shared Image Handler
+        function handleFile(file) {
+            if (!file) return;
+
+            // Broadened validation to fix mobile upload bugs where file.type might be empty
+            const isImage = file.type.startsWith('image/');
+            const isValidExt = /\.(png|jpe?g|gif|webp|bmp|heic|heif|svg)$/i.test(file.name);
+            
+            if (!isImage && !isValidExt && file.type !== "") {
+                const originalText = watermarkText.value;
+                watermarkText.value = "Error: Please upload a valid image file.";
+                setTimeout(() => watermarkText.value = originalText, 3000);
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    originalImage = img;
+                    
+                    // Match canvas size to image resolution
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Update UI state
+                    uploadPlaceholder.classList.add('hidden');
+                    dropZone.classList.remove('border-dashed'); // Remove dashed border on success
+                    canvas.classList.remove('hidden');
+                    
+                    // Enable user controls
+                    controls.forEach(ctrl => ctrl.removeAttribute('disabled'));
+                    
+                    updateCanvas();
+                };
+                
+                // Fallback catch if the file reads successfully but isn't renderable
+                img.onerror = () => {
+                    const originalText = watermarkText.value;
+                    watermarkText.value = "Error: Cannot display this image format.";
+                    setTimeout(() => watermarkText.value = originalText, 3000);
+                };
+                
+                img.src = event.target.result;
+            };
+            
+            // Catch file reading errors
+            reader.onerror = () => {
+                const originalText = watermarkText.value;
+                watermarkText.value = "Error: Could not read the file.";
+                setTimeout(() => watermarkText.value = originalText, 3000);
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // 1. File Input Handler
+        imageUpload.addEventListener('change', (e) => {
+            handleFile(e.target.files[0]);
+        });
+
+        // 2. Drag & Drop Handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Show Drag Visuals
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dragOverlay.classList.remove('hidden');
+                dropZone.classList.add('border-indigo-500');
+            });
+        });
+
+        // Hide Drag Visuals
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => {
+                dragOverlay.classList.add('hidden');
+                dropZone.classList.remove('border-indigo-500');
+            });
+        });
+
+        // Handle the actual drop
+        dropZone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files.length) {
+                handleFile(files[0]);
+            }
+        });
+
+        watermarkText.addEventListener('input', updateCanvas);
+        
+        fontSize.addEventListener('input', (e) => {
+            fontSizeDisplay.textContent = `${e.target.value}px`;
+            updateCanvas();
+        });
+        
+        fontColor.addEventListener('input', updateCanvas);
+        
+        opacity.addEventListener('input', (e) => {
+            opacityDisplay.textContent = `${e.target.value}%`;
+            updateCanvas();
+        });
+        
+        position.addEventListener('change', updateCanvas);
+
+        downloadBtn.addEventListener('click', () => {
+            if (!originalImage) return;
+            
+            const link = document.createElement('a');
+            link.download = `watermarked_${Date.now()}.png`; // Added timestamp to filename
+            link.href = canvas.toDataURL('image/png');
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+    </script>
+</body>
+</html>

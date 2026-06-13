@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image Watermark Tool</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-from: #0f0c29;
+    --bg-mid:  #302b63;
+    --bg-to:   #24243e;
+    --glass-bg: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.15);
+    --glass-hover: rgba(255,255,255,0.12);
+    --accent: #a78bfa;
+    --accent2: #60a5fa;
+    --text: #f1f0ff;
+    --text-muted: rgba(241,240,255,0.55);
+    --radius: 18px;
+    --radius-sm: 10px;
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--bg-from), var(--bg-mid), var(--bg-to));
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  header .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: rgba(167,139,250,0.12);
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 50px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+  }
+  header h1 {
+    font-size: clamp(26px, 5vw, 42px);
+    font-weight: 800;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+    line-height: 1.1;
+  }
+  header p {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  /* ── Layout ── */
+  .app {
+    width: 100%;
+    max-width: 1080px;
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 20px;
+  }
+
+  /* ── Glass card ── */
+  .card {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color var(--transition);
+  }
+  .card:hover { border-color: rgba(167,139,250,0.35); }
+
+  .card-title {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+
+  /* ── Upload ── */
+  #upload-area {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .drop-zone {
+    border: 2px dashed rgba(167,139,250,0.4);
+    border-radius: var(--radius-sm);
+    padding: 36px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+    text-align: center;
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    background: rgba(167,139,250,0.1);
+    border-color: var(--accent);
+  }
+  .drop-zone svg { opacity: 0.6; }
+  .drop-zone p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+  .drop-zone strong { color: var(--accent); }
+  #file-input { display: none; }
+  #file-name {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--accent2);
+    text-align: center;
+    min-height: 16px;
+    word-break: break-all;
+  }
+
+  /* ── Controls ── */
+  #controls {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+  label span { color: var(--accent); font-weight: 700; }
+
+  input[type="text"], select {
+    width: 100%;
+    padding: 10px 14px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color var(--transition), background var(--transition);
+  }
+  input[type="text"]:focus, select:focus {
+    border-color: var(--accent);
+    background: rgba(167,139,250,0.08);
+  }
+  select option { background: #302b63; color: var(--text); }
+
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.12);
+    outline: none;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 8px rgba(167,139,250,0.6);
+    transition: transform var(--transition);
+  }
+  input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type="range"]::-moz-range-thumb {
+    width: 18px; height: 18px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+  }
+
+  /* color picker row */
+  .color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  input[type="color"] {
+    -webkit-appearance: none;
+    width: 44px; height: 38px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: none;
+    cursor: pointer;
+    padding: 0;
+  }
+  input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+  input[type="color"]::-webkit-color-swatch {
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-sm);
+  }
+  #color-hex {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  /* position grid */
+  .position-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .pos-btn {
+    padding: 8px 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all var(--transition);
+    text-align: center;
+  }
+  .pos-btn:hover { background: rgba(167,139,250,0.12); color: var(--text); }
+  .pos-btn.active {
+    background: rgba(167,139,250,0.25);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 10px rgba(167,139,250,0.25);
+  }
+
+  /* ── Preview ── */
+  #preview-panel {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .canvas-wrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.25);
+    border-radius: var(--radius-sm);
+    min-height: 320px;
+    position: relative;
+    overflow: hidden;
+  }
+  #checker {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(45deg, rgba(255,255,255,.03) 25%, transparent 25%),
+      linear-gradient(-45deg, rgba(255,255,255,.03) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, rgba(255,255,255,.03) 75%),
+      linear-gradient(-45deg, transparent 75%, rgba(255,255,255,.03) 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+  #empty-hint {
+    position: absolute;
+    color: var(--text-muted);
+    font-size: 13px;
+    text-align: center;
+    pointer-events: none;
+  }
+  #watermark-canvas {
+    max-width: 100%;
+    max-height: 480px;
+    object-fit: contain;
+    border-radius: 8px;
+    display: none;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Download ── */
+  #btn-download {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: opacity var(--transition), transform var(--transition), box-shadow var(--transition);
+    box-shadow: 0 4px 24px rgba(167,139,250,0.35);
+    text-decoration: none;
+  }
+  #btn-download:hover:not(:disabled) {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(167,139,250,0.5);
+  }
+  #btn-download:active:not(:disabled) { transform: translateY(0); }
+  #btn-download:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 720px) {
+    .app {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto auto;
+    }
+    #upload-area { grid-column: 1; grid-row: 1; }
+    #controls     { grid-column: 1; grid-row: 3; }
+    #preview-panel{ grid-column: 1; grid-row: 2; }
+    .canvas-wrapper { min-height: 220px; }
+    #watermark-canvas { max-height: 300px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">✦ Free &amp; Offline</div>
+  <h1>Image Watermark Tool</h1>
+  <p>Add custom watermarks to your images — no upload, no account, all in-browser.</p>
+</header>
+
+<div class="app">
+
+  <!-- Upload -->
+  <div class="card" id="upload-area">
+    <div class="card-title">① Upload Image</div>
+    <div class="drop-zone" id="drop-zone">
+      <svg width="44" height="44" fill="none" viewBox="0 0 24 24" stroke="rgba(167,139,250,0.8)" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+      </svg>
+      <p><strong>Click to browse</strong> or drag &amp; drop<br>PNG, JPG, WEBP, GIF, BMP</p>
+    </div>
+    <input type="file" id="file-input" accept="image/*">
+    <div id="file-name"></div>
+  </div>
+
+  <!-- Controls -->
+  <div class="card" id="controls">
+    <div class="card-title">② Watermark Settings</div>
+
+    <div class="field">
+      <label for="wm-text">Watermark Text</label>
+      <input type="text" id="wm-text" placeholder="© Your Name 2025" value="© Watermark">
+    </div>
+
+    <div class="field">
+      <label for="wm-size">Font Size <span id="size-val">32px</span></label>
+      <input type="range" id="wm-size" min="10" max="120" value="32">
+    </div>
+
+    <div class="field">
+      <label>Font Color</label>
+      <div class="color-row">
+        <input type="color" id="wm-color" value="#ffffff">
+        <input type="text" id="color-hex" value="#ffffff" maxlength="7">
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="wm-opacity">Opacity <span id="opacity-val">70%</span></label>
+      <input type="range" id="wm-opacity" min="5" max="100" value="70">
+    </div>
+
+    <div class="field">
+      <label>Position</label>
+      <div class="position-grid" id="pos-grid">
+        <button class="pos-btn" data-pos="top-left">↖ Top Left</button>
+        <button class="pos-btn" data-pos="top-center">↑ Top</button>
+        <button class="pos-btn" data-pos="top-right">↗ Top Right</button>
+        <button class="pos-btn" data-pos="middle-left">← Mid Left</button>
+        <button class="pos-btn active" data-pos="center">✦ Center</button>
+        <button class="pos-btn" data-pos="middle-right">Mid Right →</button>
+        <button class="pos-btn" data-pos="bottom-left">↙ Bot Left</button>
+        <button class="pos-btn" data-pos="bottom-center">↓ Bottom</button>
+        <button class="pos-btn" data-pos="bottom-right">↘ Bot Right</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview + Download -->
+  <div id="preview-panel">
+    <div class="card" style="flex:1; display:flex; flex-direction:column; gap:0;">
+      <div class="card-title">③ Live Preview</div>
+      <div class="canvas-wrapper">
+        <div id="checker"></div>
+        <div id="empty-hint">Upload an image to see the preview</div>
+        <canvas id="watermark-canvas"></canvas>
+      </div>
+    </div>
+
+    <button id="btn-download" disabled>
+      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+      </svg>
+      Download Watermarked Image
+    </button>
+  </div>
+
+</div>
+
+<script>
+  const fileInput   = document.getElementById('file-input');
+  const dropZone    = document.getElementById('drop-zone');
+  const fileName    = document.getElementById('file-name');
+  const canvas      = document.getElementById('watermark-canvas');
+  const ctx         = canvas.getContext('2d');
+  const emptyHint   = document.getElementById('empty-hint');
+  const btnDownload = document.getElementById('btn-download');
+
+  const wmText      = document.getElementById('wm-text');
+  const wmSize      = document.getElementById('wm-size');
+  const sizeVal     = document.getElementById('size-val');
+  const wmColor     = document.getElementById('wm-color');
+  const colorHex    = document.getElementById('color-hex');
+  const wmOpacity   = document.getElementById('wm-opacity');
+  const opacityVal  = document.getElementById('opacity-val');
+  const posGrid     = document.getElementById('pos-grid');
+
+  let currentImage = null;
+  let selectedPos  = 'center';
+
+  // ── Load Image ──────────────────────────────────────────
+  function loadImage(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    fileName.textContent = file.name;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        currentImage = img;
+        canvas.style.display = 'block';
+        emptyHint.style.display = 'none';
+        btnDownload.disabled = false;
+        updatePreview();
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // ── Add Watermark ────────────────────────────────────────
+  function addWatermark() {
+    if (!currentImage) return;
+
+    const text    = wmText.value || '© Watermark';
+    const size    = parseInt(wmSize.value);
+    const color   = wmColor.value;
+    const opacity = parseInt(wmOpacity.value) / 100;
+    const padding = 24;
+
+    ctx.font = `bold ${size}px 'Segoe UI', system-ui, sans-serif`;
+    ctx.textBaseline = 'middle';
+
+    const metrics   = ctx.measureText(text);
+    const textW     = metrics.width;
+    const textH     = size * 1.2;
+
+    let x, y, align;
+
+    switch (selectedPos) {
+      case 'top-left':
+        x = padding; y = padding + textH / 2; align = 'left'; break;
+      case 'top-center':
+        x = canvas.width / 2; y = padding + textH / 2; align = 'center'; break;
+      case 'top-right':
+        x = canvas.width - padding; y = padding + textH / 2; align = 'right'; break;
+      case 'middle-left':
+        x = padding; y = canvas.height / 2; align = 'left'; break;
+      case 'center':
+        x = canvas.width / 2; y = canvas.height / 2; align = 'center'; break;
+      case 'middle-right':
+        x = canvas.width - padding; y = canvas.height / 2; align = 'right'; break;
+      case 'bottom-left':
+        x = padding; y = canvas.height - padding - textH / 2; align = 'left'; break;
+      case 'bottom-center':
+        x = canvas.width / 2; y = canvas.height - padding - textH / 2; align = 'center'; break;
+      case 'bottom-right':
+        x = canvas.width - padding; y = canvas.height - padding - textH / 2; align = 'right'; break;
+      default:
+        x = canvas.width / 2; y = canvas.height / 2; align = 'center';
+    }
+
+    // subtle shadow for readability
+    ctx.save();
+    ctx.globalAlpha = opacity;
+    ctx.textAlign   = align;
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur  = size * 0.3;
+    ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 1;
+    ctx.fillStyle   = color;
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+
+  // ── Update Preview ───────────────────────────────────────
+  function updatePreview() {
+    if (!currentImage) return;
+    canvas.width  = currentImage.naturalWidth;
+    canvas.height = currentImage.naturalHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(currentImage, 0, 0);
+    addWatermark();
+  }
+
+  // ── Download ─────────────────────────────────────────────
+  function downloadImage() {
+    if (!currentImage) return;
+    const link = document.createElement('a');
+    link.download = 'watermarked.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  // ── Events ───────────────────────────────────────────────
+  dropZone.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => loadImage(e.target.files[0]));
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    loadImage(e.dataTransfer.files[0]);
+  });
+
+  wmText.addEventListener('input', updatePreview);
+
+  wmSize.addEventListener('input', () => {
+    sizeVal.textContent = wmSize.value + 'px';
+    updatePreview();
+  });
+
+  wmColor.addEventListener('input', () => {
+    colorHex.value = wmColor.value;
+    updatePreview();
+  });
+
+  colorHex.addEventListener('input', () => {
+    if (/^#[0-9a-fA-F]{6}$/.test(colorHex.value)) {
+      wmColor.value = colorHex.value;
+      updatePreview();
+    }
+  });
+
+  wmOpacity.addEventListener('input', () => {
+    opacityVal.textContent = wmOpacity.value + '%';
+    updatePreview();
+  });
+
+  posGrid.querySelectorAll('.pos-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      posGrid.querySelectorAll('.pos-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedPos = btn.dataset.pos;
+      updatePreview();
+    });
+  });
+
+  btnDownload.addEventListener('click', downloadImage);
+</script>
+</body>
+</html>

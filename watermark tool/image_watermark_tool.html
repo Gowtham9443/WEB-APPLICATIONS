@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Watermark Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #312e81 50%, #4c1d95 100%);
+            background-attachment: fixed;
+        }
+
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #ffffff;
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+        input[type=color] {
+            -webkit-appearance: none;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+            height: 40px;
+            padding: 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        input[type=color]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type=color]::-webkit-color-swatch {
+            border: none;
+            border-radius: 8px;
+        }
+        
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-input {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        .glass-input:focus {
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(167, 139, 250, 0.5);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-100 p-4 md:p-8 flex items-center justify-center">
+
+    <main class="w-full max-w-6xl glass-panel rounded-3xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        
+        <!-- Left Section: Image Preview -->
+        <div class="w-full lg:w-3/5 p-6 flex flex-col border-b lg:border-b-0 lg:border-r border-white/10">
+            <header class="mb-6 flex items-center justify-between">
+                <h1 class="text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-300 to-purple-300">
+                    Watermark Studio
+                </h1>
+                <label class="cursor-pointer bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium transition-colors shadow-lg shadow-indigo-500/30 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Upload Image
+                    <input type="file" id="imageUpload" accept="image/*" class="hidden">
+                </label>
+            </header>
+
+            <!-- Canvas Container -->
+            <div class="relative flex-grow flex items-center justify-center bg-black/30 rounded-2xl border border-white/5 overflow-hidden min-h-[300px] lg:min-h-[500px]">
+                
+                <!-- Placeholder when no image -->
+                <div id="uploadPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-400 pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="text-lg">Upload an image to get started</p>
+                </div>
+
+                <!-- Preview Canvas -->
+                <canvas id="canvas" class="max-w-full max-h-full object-contain hidden"></canvas>
+            </div>
+        </div>
+
+        <!-- Right Section: Controls -->
+        <div class="w-full lg:w-2/5 p-6 lg:p-8 bg-black/20 flex flex-col">
+            <h2 class="text-xl font-semibold mb-6 text-slate-200">Watermark Settings</h2>
+            
+            <div class="space-y-6 flex-grow">
+                
+                <!-- Text Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-300">Watermark Text</label>
+                    <input type="text" id="watermarkText" value="© Your Brand" placeholder="Enter text..." 
+                        class="w-full glass-input px-4 py-3 rounded-xl disabled:opacity-50" disabled>
+                </div>
+
+                <!-- Font Size -->
+                <div class="space-y-2">
+                    <div class="flex justify-between">
+                        <label class="block text-sm font-medium text-slate-300">Font Size</label>
+                        <span id="fontSizeDisplay" class="text-sm text-slate-400">40px</span>
+                    </div>
+                    <input type="range" id="fontSize" min="10" max="200" value="40" class="disabled:opacity-50" disabled>
+                </div>
+
+                <!-- Color and Opacity Row -->
+                <div class="flex gap-4">
+                    <div class="w-1/3 space-y-2">
+                        <label class="block text-sm font-medium text-slate-300">Color</label>
+                        <input type="color" id="fontColor" value="#ffffff" class="disabled:opacity-50" disabled>
+                    </div>
+                    
+                    <div class="w-2/3 space-y-2">
+                        <div class="flex justify-between">
+                            <label class="block text-sm font-medium text-slate-300">Opacity</label>
+                            <span id="opacityDisplay" class="text-sm text-slate-400">50%</span>
+                        </div>
+                        <input type="range" id="opacity" min="0" max="100" value="50" class="mt-2 disabled:opacity-50" disabled>
+                    </div>
+                </div>
+
+                <!-- Position -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-slate-300">Position</label>
+                    <div class="relative">
+                        <select id="position" class="w-full glass-input px-4 py-3 rounded-xl appearance-none disabled:opacity-50" disabled>
+                            <option value="bottom-right" class="bg-slate-800 text-white">Bottom Right</option>
+                            <option value="bottom-left" class="bg-slate-800 text-white">Bottom Left</option>
+                            <option value="top-right" class="bg-slate-800 text-white">Top Right</option>
+                            <option value="top-left" class="bg-slate-800 text-white">Top Left</option>
+                            <option value="center" class="bg-slate-800 text-white">Center</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Download Button -->
+            <button id="downloadBtn" class="mt-8 w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-4 px-6 rounded-xl shadow-lg shadow-purple-500/30 transform transition-all duration-200 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+                Download Watermarked Image
+            </button>
+        </div>
+    </main>
+
+    <script>
+        // DOM Elements
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const imageUpload = document.getElementById('imageUpload');
+        const uploadPlaceholder = document.getElementById('uploadPlaceholder');
+        const downloadBtn = document.getElementById('downloadBtn');
+        
+        // Control Elements
+        const watermarkText = document.getElementById('watermarkText');
+        const fontSize = document.getElementById('fontSize');
+        const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+        const fontColor = document.getElementById('fontColor');
+        const opacity = document.getElementById('opacity');
+        const opacityDisplay = document.getElementById('opacityDisplay');
+        const position = document.getElementById('position');
+
+        // State variables
+        let originalImage = null;
+
+        // Group all inputs for easy enabling/disabling
+        const controls = [watermarkText, fontSize, fontColor, opacity, position, downloadBtn];
+
+        function updateCanvas() {
+            if (!originalImage) return;
+
+            // Clear canvas and draw original image
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(originalImage, 0, 0);
+
+            // Get settings
+            const text = watermarkText.value;
+            const size = parseInt(fontSize.value, 10);
+            const color = fontColor.value;
+            const alpha = parseInt(opacity.value, 10) / 100;
+            const pos = position.value;
+
+            // Setup text style
+            ctx.font = `bold ${size}px 'Inter', Arial, sans-serif`;
+            ctx.fillStyle = color;
+            ctx.globalAlpha = alpha;
+            ctx.textBaseline = 'top';
+
+            // Optional: Add subtle drop shadow for better visibility on varied backgrounds
+            ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+            ctx.shadowBlur = Math.max(2, size / 10);
+            ctx.shadowOffsetX = Math.max(1, size / 20);
+            ctx.shadowOffsetY = Math.max(1, size / 20);
+
+            // Calculate metrics
+            const metrics = ctx.measureText(text);
+            const textWidth = metrics.width;
+            const textHeight = size; // Approximate height
+
+            // Padding from edges
+            const padding = Math.max(20, canvas.width * 0.02);
+
+            let x = 0;
+            let y = 0;
+
+            // Calculate positions
+            switch (pos) {
+                case 'top-left':
+                    x = padding;
+                    y = padding;
+                    break;
+                case 'top-right':
+                    x = canvas.width - textWidth - padding;
+                    y = padding;
+                    break;
+                case 'bottom-left':
+                    x = padding;
+                    y = canvas.height - textHeight - padding;
+                    break;
+                case 'bottom-right':
+                    x = canvas.width - textWidth - padding;
+                    y = canvas.height - textHeight - padding;
+                    break;
+                case 'center':
+                    x = (canvas.width - textWidth) / 2;
+                    y = (canvas.height - textHeight) / 2;
+                    break;
+            }
+
+            // Draw the watermark
+            ctx.fillText(text, x, y);
+
+            // Reset alpha & shadow to prevent affecting other drawings
+            ctx.globalAlpha = 1.0;
+            ctx.shadowColor = 'transparent';
+        }
+
+        // File Upload Handler
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    // Set original image
+                    originalImage = img;
+                    
+                    // Set canvas dimensions to match image resolution for high-quality export
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Update UI
+                    uploadPlaceholder.classList.add('hidden');
+                    canvas.classList.remove('hidden');
+                    
+                    // Enable controls
+                    controls.forEach(ctrl => ctrl.removeAttribute('disabled'));
+                    
+                    // Initial draw
+                    updateCanvas();
+                };
+                img.src = event.target.result;
+            };
+            
+            reader.readAsDataURL(file);
+        });
+
+        // Event Listeners for Controls
+        watermarkText.addEventListener('input', updateCanvas);
+        
+        fontSize.addEventListener('input', (e) => {
+            fontSizeDisplay.textContent = `${e.target.value}px`;
+            updateCanvas();
+        });
+        
+        fontColor.addEventListener('input', updateCanvas);
+        
+        opacity.addEventListener('input', (e) => {
+            opacityDisplay.textContent = `${e.target.value}%`;
+            updateCanvas();
+        });
+        
+        position.addEventListener('change', updateCanvas);
+
+        // Download Handler
+        downloadBtn.addEventListener('click', () => {
+            if (!originalImage) return;
+            
+            // Create a temporary link
+            const link = document.createElement('a');
+            link.download = 'watermarked-image.png';
+            
+            // Convert canvas to data URL (PNG format)
+            link.href = canvas.toDataURL('image/png');
+            
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+    </script>
+</body>
+</html>
