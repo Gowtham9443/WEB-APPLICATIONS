@@ -7,7 +7,7 @@ This repository contains a collection of simple and useful web applications deve
 ## 🛠️ Technologies Used
 - HTML5  
 - CSS3  
-- JavaScript  
+- JavaScript    
 ---
 ## 📌 Features
 - Simple and user-friendly UI  
