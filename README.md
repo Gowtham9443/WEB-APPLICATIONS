@@ -97,4 +97,7 @@ https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanc
 ### 17. interest calculator online
 🔗 Demo link : https://gowtham2025.neocities.org/WEB%20APP/Interest%20Calculator/i%20new
 ---
+### 18. portfolio builder
+
+---
 
