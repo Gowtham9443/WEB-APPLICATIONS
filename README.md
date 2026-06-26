@@ -3,7 +3,7 @@ This repository contains a collection of simple and useful web applications deve
    
  ~  (2026 New Update ComingSoon ......)       
 ---            
-----       
+----         
 ## 🛠️ Technologies Used
 - HTML5  
 - CSS3      
