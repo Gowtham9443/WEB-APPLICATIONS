@@ -101,6 +101,6 @@ https://gowtham2025.neocities.org/WEB%20APP/Bill%20Splitter/bill-splitter-enhanc
 🔗 Demo link : https://gowtham2025.neocities.org/WEB%20APP/portfolio_builder/portfolio_builder
 ---    
 ### 19. QR PAY
-
+https://gowtham2025.neocities.org/WEB%20APP/QR%20payLink/PayLink%20QR
 ---
 
