@@ -2,7 +2,7 @@
 
    This repository contains a collection of simple and useful web applications developed using HTML, CSS, and JavaScript. Each project is designed to solve a specific problem or provide a utility feature.
      
- ~  (2026 New Update ComingSoon ...........)         
+ ~  (2026 New Update ComingSoon .............)         
              
 ----                  
 ## 🛠️ Technologies Used
