@@ -10,7 +10,7 @@
 - CSS3        
 - JavaScript        
 ---
-## 📌 Features
+## 📌 Features  
 - Simple and user-friendly UI  
 - Lightweight applications  
 - Works directly in the browser  
