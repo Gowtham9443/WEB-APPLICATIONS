@@ -7,7 +7,7 @@
 ## 🛠️ Technologies Used.
 - HTML5      
 - CSS3        
-- JavaScript        
+- JavaScript          
 ---
 ## 📌 Features  
 - Simple and user-friendly UI  
