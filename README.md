@@ -10,7 +10,7 @@
 - JavaScript          
 ---
 ## 📌 Features  
-- Simple and user-friendly UI  
+- Simple and user-friendly UI    
 - Lightweight applications  
 - Works directly in the browser  
 - No installation required  
