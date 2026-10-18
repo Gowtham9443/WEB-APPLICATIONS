@@ -16,7 +16,7 @@
 - No installation required  
 ---
 ## 📂 How to Use
-1. Open any demo link above  
+1. Open any demo link above    
 2. Start using the application directly  
 3. Explore different tools  
 ---
