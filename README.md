@@ -8,7 +8,7 @@
 - HTML5                
 - CSS3              
 - JavaScript                      
----
+---  
 ## 📌 Features    
 - Simple and user-friendly UI    
 - Lightweight applications  
