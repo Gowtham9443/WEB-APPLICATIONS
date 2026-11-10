@@ -13,7 +13,7 @@
 - Simple and user-friendly UI    
 - Lightweight applications  
 - Works directly in the browser  
-- No installation required  
+- No installation required    
 ---
 ## 📂 How to Use
 1. Open any demo link above    
