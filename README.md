@@ -11,7 +11,7 @@
 ---      
 ## 📌 Features     
 - Simple and user-friendly UI      
-- Lightweight applications  
+- Lightweight applications    
 - Works directly in the browser  
 - No installation required    
 ---
